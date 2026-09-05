@@ -75,10 +75,10 @@ public class DashboardController {
         model.addAttribute("cipherText", cipherText);
         model.addAttribute("language", language);
 
-        if (cipherText == null || cipherText.trim().length() < 150) {
+        if (cipherText == null || cipherText.trim().length() < 120) {
             model.addAttribute(
                     "error",
-                    "El texto cifrado debe contener al menos 150 caracteres.");
+                    "El texto cifrado debe contener al menos 120 caracteres.");
 
             return "dashboard";
         }

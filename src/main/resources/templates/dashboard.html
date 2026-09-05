@@ -12,7 +12,6 @@
 
   <body>
     <div class="app">
-      <!-- SIDEBAR -->
       <aside class="sidebar">
         <div class="brand">
           <span class="brand-mark">SEC</span>
@@ -32,7 +31,6 @@
         </nav>
       </aside>
 
-      <!-- MAIN -->
       <main class="main-content">
         <div class="dashboard-container">
           <!-- TOPBAR -->
@@ -62,7 +60,6 @@
             </div>
           </header>
 
-          <!-- ANALYSIS -->
           <section class="dashboard-section">
             <div class="section-header">
               <span class="section-label"> ANÁLISIS </span>
@@ -80,7 +77,7 @@
                   <textarea
                     id="cipherText"
                     name="cipherText"
-                    minlength="150"
+                    minlength="120"
                     required
                     rows="10"
                     placeholder="Introduce aquí el criptograma..."
@@ -88,7 +85,7 @@
                   ></textarea>
 
                   <small class="field-help">
-                    El texto debe contener al menos 150 caracteres.
+                    El texto debe contener al menos 120 caracteres.
                   </small>
                 </div>
 
@@ -130,7 +127,6 @@
             </div>
           </section>
 
-          <!-- STATISTICS -->
           <section class="stats-grid">
             <div class="stat-card">
               <div class="stat-content">
@@ -159,7 +155,6 @@
             </div>
           </section>
 
-          <!-- ATTACKS -->
           <section class="dashboard-section">
             <div class="section-header">
               <span class="section-label"> CRIPTOANÁLISIS </span>
@@ -170,7 +165,6 @@
             </div>
 
             <div class="algorithm-grid">
-              <!-- CAESAR -->
               <article class="algorithm-card">
                 <span class="algorithm-number"> 01 </span>
 
@@ -197,7 +191,6 @@
                 </form>
               </article>
 
-              <!-- AFFINE -->
               <article class="algorithm-card">
                 <span class="algorithm-number"> 02 </span>
 
@@ -224,7 +217,6 @@
                 </form>
               </article>
 
-              <!-- VIGENERE -->
               <article class="algorithm-card">
                 <span class="algorithm-number"> 03 </span>
 
@@ -253,7 +245,6 @@
             </div>
           </section>
 
-          <!-- FREQUENCY -->
           <section class="dashboard-section">
             <div class="section-header">
               <span class="section-label"> ESTADÍSTICA </span>
@@ -297,7 +288,6 @@
             </div>
           </section>
 
-          <!-- VIGENERE RESULT -->
           <section
             class="dashboard-section attack-results"
             th:if="${attackComplete == true and attack == 'VIGENERE' and vigenereResult != null}"
@@ -331,7 +321,6 @@
             </div>
           </section>
 
-          <!-- AFFINE RESULT -->
           <section
             class="dashboard-section attack-results"
             th:if="${attackComplete == true and attack == 'AFFINE' and affineResult != null}"
@@ -380,7 +369,6 @@
             </div>
           </section>
 
-          <!-- CAESAR RESULT -->
           <section
             class="dashboard-section attack-results"
             th:if="${attackComplete == true and attack == 'CAESAR' and caesarResults != null}"
@@ -415,7 +403,6 @@
             </div>
           </section>
 
-          <!-- ERROR -->
           <section class="message-section" th:if="${error != null}">
             <p class="error-message" th:text="${error}"></p>
           </section>

@@ -46,8 +46,8 @@
               </p>
             </div>
 
-            <div class="topbar-user">
-              <span th:text="${#authentication.name}">Usuario</span>
+            <div class="user-info">
+              <span class="user-name" th:text="${username}"> Usuario </span>
 
               <form th:action="@{/logout}" method="post">
                 <input
