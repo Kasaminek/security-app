@@ -136,11 +136,6 @@ public class CryptoController {
     }
 
     private String prepareText(String text, Language language) {
-        if (text == null || text.trim().length() < 400) {
-            throw new IllegalArgumentException(
-                    "El texto debe contener al menos 400 caracteres.");
-        }
-
         if (language.name().equals("ENGLISH")
                 && (text.contains("Ñ") || text.contains("ñ"))) {
 

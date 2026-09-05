@@ -55,19 +55,6 @@
           </div>
         </header>
 
-        <section class="welcome-card">
-          <div>
-            <span class="card-label">ENTORNO DE ANÁLISIS</span>
-
-            <h2>Laboratorio criptográfico</h2>
-
-            <p>
-              Analiza criptogramas y evalúa sus características mediante
-              técnicas de criptoanálisis.
-            </p>
-          </div>
-        </section>
-
         <section class="analysis-section">
           <div class="section-header">
             <div>
@@ -87,10 +74,21 @@
                 <textarea
                   id="cipherText"
                   name="cipherText"
+                  minlength="400"
+                  required
                   rows="10"
                   placeholder="Introduce aquí el criptograma..."
                   th:text="${cipherText}"
                 ></textarea>
+                
+                <small class="field-help">
+                  El texto debe contener al menos 400 caracteres.
+                </small>
+
+                <small class="field-help">
+                  El texto debe contener al menos 400 caracteres.
+                </small>
+              </div>
               </div>
 
               <div class="form-footer">

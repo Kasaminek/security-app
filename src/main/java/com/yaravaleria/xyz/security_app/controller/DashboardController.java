@@ -71,8 +71,17 @@ public class DashboardController {
     public String analyze(@RequestParam("cipherText") String cipherText, @RequestParam("language") Language language,
             Model model, Authentication authentication, HttpSession session) {
         prepareCommonModel(model, authentication);
+        
         model.addAttribute("cipherText", cipherText);
         model.addAttribute("language", language);
+
+        if (cipherText == null || cipherText.trim().length() < 400) {
+            model.addAttribute(
+                    "error",
+                    "El texto cifrado debe contener al menos 400 caracteres.");
+
+            return "dashboard";
+        }
 
         String normalizedText = normaServ.normalize(
                 cipherText,
@@ -176,7 +185,7 @@ public class DashboardController {
             }
 
             case "VIGENERE" -> {
-                VigenereAttackResult vResult = vigAtk.attack( normalizedText, language);
+                VigenereAttackResult vResult = vigAtk.attack(normalizedText, language);
                 model.addAttribute("repeatedSequences", vResult.repeatedSequences());
                 model.addAttribute("keyLengthCandidates", vResult.candidates());
                 model.addAttribute("vigenereCandidates", vResult.candidates());
