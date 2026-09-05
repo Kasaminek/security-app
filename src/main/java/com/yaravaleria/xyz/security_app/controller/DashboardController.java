@@ -157,6 +157,15 @@ public class DashboardController {
         String selectedAttack = attack.trim().toUpperCase();
         model.addAttribute("attack", selectedAttack);
 
+        String diagnosis = diagnoseAttackCompatibility(diagnose, selectedAttack);
+
+        if (diagnosis != null) {
+            model.addAttribute("error", diagnosis);
+            model.addAttribute("analysisComplete", true);
+            model.addAttribute("attackComplete", false);
+            return "dashboard";
+        }
+
         switch (selectedAttack) {
             case "CAESAR" -> {
                 List<CaesarAttackResult> cResult = caeAtk.attack(normalizedText, language);
@@ -209,6 +218,26 @@ public class DashboardController {
         model.addAttribute("attackComplete", true);
 
         return "dashboard";
+    }
+
+    private String diagnoseAttackCompatibility(String diagnose, String attack) {
+        if (diagnose == null || diagnose.isBlank()) {
+            return null;
+        }
+
+        boolean isMonoalphabetic = diagnose.equals("El texto cifrado es compatible con un cifrado monoalfabético.");
+        boolean isPolyalphabetic = diagnose.equals("El texto cifrado es compatible con un cifrado polialfabético.");
+
+        if (isMonoalphabetic && attack.equals("VIGENERE")) {
+            return "No se encontró un descifrado confiable para este criptograma.";
+        }
+
+        if (isPolyalphabetic &&
+                (attack.equals("CAESAR") || attack.equals("AFFINE"))) {
+            return "No se encontró un descifrado confiable para este criptograma.";
+        }
+
+        return null;
     }
 
     private void prepareCommonModel(Model model, Authentication authentication) {

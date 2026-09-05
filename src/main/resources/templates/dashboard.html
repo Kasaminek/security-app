@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Seguridad de la Información</title>
+
+    <title>Dashboard | Seguridad de la Información</title>
 
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
@@ -11,6 +12,7 @@
 
   <body>
     <div class="app">
+      <!-- SIDEBAR -->
       <aside class="sidebar">
         <div class="brand">
           <span class="brand-mark">SEC</span>
@@ -30,390 +32,394 @@
         </nav>
       </aside>
 
+      <!-- MAIN -->
       <main class="main-content">
-        <header class="topbar">
-          <div>
-            <span class="eyebrow">LABORATORIO CRIPTOGRÁFICO</span>
+        <div class="dashboard-container">
+          <!-- TOPBAR -->
+          <header class="topbar">
+            <div class="topbar-title">
+              <span class="eyebrow"> LABORATORIO CRIPTOGRÁFICO </span>
 
-            <h1>Dashboard</h1>
+              <h1>Dashboard</h1>
 
-            <p>Análisis y criptoanálisis de textos</p>
-          </div>
+              <p>Análisis y criptoanálisis de textos</p>
+            </div>
 
-          <div class="user-info">
-            <span class="user-name" th:text="${username}">Usuario</span>
+            <div class="user-info">
+              <span class="user-name" th:text="${username}"> Usuario </span>
 
-            <form th:action="@{/logout}" method="post">
-              <input
-                type="hidden"
-                th:name="${_csrf.parameterName}"
-                th:value="${_csrf.token}"
-              />
+              <form th:action="@{/logout}" method="post">
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
 
-              <button type="submit" class="logout-button">Cerrar sesión</button>
-            </form>
-          </div>
-        </header>
+                <button type="submit" class="logout-button">
+                  Cerrar sesión
+                </button>
+              </form>
+            </div>
+          </header>
 
-        <section class="analysis-section">
-          <div class="section-header">
-            <div>
-              <span class="section-label">ANÁLISIS</span>
+          <!-- ANALYSIS -->
+          <section class="dashboard-section">
+            <div class="section-header">
+              <span class="section-label"> ANÁLISIS </span>
 
               <h2>Nuevo análisis</h2>
 
-              <p>Introduce el texto cifrado para comenzar.</p>
+              <p>Introduce el texto cifrado para comenzar el análisis.</p>
             </div>
-          </div>
 
-          <div class="analysis-card">
-            <form th:action="@{/analyze}" method="post">
-              <div class="form-group">
-                <label for="cipherText">Texto cifrado</label>
+            <div class="analysis-card">
+              <form th:action="@{/analyze}" method="post" class="analysis-form">
+                <div class="form-group">
+                  <label for="cipherText"> Texto cifrado </label>
 
-                <textarea
-                  id="cipherText"
-                  name="cipherText"
-                  minlength="150"
-                  required
-                  rows="10"
-                  placeholder="Introduce aquí el criptograma..."
-                  th:text="${cipherText}"
-                ></textarea>
+                  <textarea
+                    id="cipherText"
+                    name="cipherText"
+                    minlength="150"
+                    required
+                    rows="10"
+                    placeholder="Introduce aquí el criptograma..."
+                    th:text="${cipherText}"
+                  ></textarea>
 
-                <small class="field-help">
-                  El texto debe contener al menos 150 caracteres.
-                </small>
-              </div>
-
-              <div class="form-footer">
-                <div class="language-selector">
-                  <label for="language">Idioma</label>
-
-                  <select id="language" name="language" required>
-                    <option
-                      th:each="lang : ${languages}"
-                      th:value="${lang}"
-                      th:text="${lang}"
-                      th:selected="${language != null ? language == lang : lang.name() == 'SPANISH'}"
-                    ></option>
-                  </select>
+                  <small class="field-help">
+                    El texto debe contener al menos 150 caracteres.
+                  </small>
                 </div>
 
-                <div class="input-actions">
+                <div class="form-footer">
+                  <div class="language-selector">
+                    <label for="language"> Idioma </label>
+
+                    <select id="language" name="language" required>
+                      <option
+                        th:each="lang : ${languages}"
+                        th:value="${lang}"
+                        th:text="${lang}"
+                        th:selected="${language != null ? language == lang : lang.name() == 'SPANISH'}"
+                      ></option>
+                    </select>
+                  </div>
+
+                  <div class="input-actions">
+                    <input
+                      type="hidden"
+                      th:name="${_csrf.parameterName}"
+                      th:value="${_csrf.token}"
+                    />
+
+                    <button type="submit" class="primary-button">
+                      Analizar
+                    </button>
+
+                    <button
+                      type="button"
+                      class="secondary-button"
+                      onclick="document.getElementById('cipherText').value = ''"
+                    >
+                      Limpiar
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- STATISTICS -->
+          <section class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-content">
+                <span class="stat-label"> Índice de Coincidencia </span>
+
+                <strong
+                  id="ic-result"
+                  th:text="${ic != null ? #numbers.formatDecimal(ic, 1, 6) : '—'}"
+                >
+                  —
+                </strong>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-content">
+                <span class="stat-label"> Diagnóstico </span>
+
+                <strong
+                  id="cipher-result"
+                  th:text="${diagnose != null ? diagnose : 'Pendiente'}"
+                >
+                  Pendiente
+                </strong>
+              </div>
+            </div>
+          </section>
+
+          <!-- ATTACKS -->
+          <section class="dashboard-section">
+            <div class="section-header">
+              <span class="section-label"> CRIPTOANÁLISIS </span>
+
+              <h2>Algoritmos disponibles</h2>
+
+              <p>Selecciona un método para atacar el criptograma.</p>
+            </div>
+
+            <div class="algorithm-grid">
+              <!-- CAESAR -->
+              <article class="algorithm-card">
+                <span class="algorithm-number"> 01 </span>
+
+                <h3>César</h3>
+
+                <p>Sustitución mediante desplazamiento.</p>
+
+                <form
+                  th:if="${analysisComplete}"
+                  th:action="@{/attack}"
+                  method="post"
+                >
+                  <input type="hidden" name="attack" value="CAESAR" />
+
                   <input
                     type="hidden"
                     th:name="${_csrf.parameterName}"
                     th:value="${_csrf.token}"
                   />
 
-                  <button type="submit" class="primary-button">Analizar</button>
-
-                  <button
-                    type="button"
-                    class="secondary-button"
-                    onclick="document.getElementById('cipherText').value = ''"
-                  >
-                    Limpiar
+                  <button type="submit" class="algorithm-button">
+                    Ejecutar ataque
                   </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </section>
+                </form>
+              </article>
 
-        <section class="stats-grid">
-          <div class="stat-card">
-            <span class="stat-label">Índice de Coincidencia</span>
+              <!-- AFFINE -->
+              <article class="algorithm-card">
+                <span class="algorithm-number"> 02 </span>
 
-            <strong
-              id="ic-result"
-              th:text="${ic != null ? #numbers.formatDecimal(ic, 1, 6) : '—'}"
-            >
-              —
-            </strong>
-          </div>
+                <h3>Afín</h3>
 
-          <div class="stat-card">
-            <span class="stat-label">Diagnóstico</span>
+                <p>Sustitución monoalfabética lineal.</p>
 
-            <strong
-              id="cipher-result"
-              th:text="${diagnose != null ? diagnose : 'Pendiente'}"
-            >
-              Pendiente
-            </strong>
-          </div>
+                <form
+                  th:if="${analysisComplete}"
+                  th:action="@{/attack}"
+                  method="post"
+                >
+                  <input type="hidden" name="attack" value="AFFINE" />
 
-          <div class="stat-card">
-            <span class="stat-label">Clave</span>
+                  <input
+                    type="hidden"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
+                  />
 
-            <strong id="key-result">—</strong>
-          </div>
-        </section>
+                  <button type="submit" class="algorithm-button">
+                    Ejecutar ataque
+                  </button>
+                </form>
+              </article>
 
-        <section class="algorithms-section">
-          <div class="section-header">
-            <div>
-              <span class="section-label">CRIPTOANÁLISIS</span>
+              <!-- VIGENERE -->
+              <article class="algorithm-card">
+                <span class="algorithm-number"> 03 </span>
 
-              <h2>Algoritmos disponibles</h2>
+                <h3>Vigenère</h3>
 
-              <p>Selecciona un método para atacar el criptograma.</p>
+                <p>Sustitución polialfabética.</p>
+
+                <form
+                  th:if="${analysisComplete}"
+                  th:action="@{/attack}"
+                  method="post"
+                >
+                  <input type="hidden" name="attack" value="VIGENERE" />
+
+                  <input
+                    type="hidden"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
+                  />
+
+                  <button type="submit" class="algorithm-button">
+                    Ejecutar ataque
+                  </button>
+                </form>
+              </article>
             </div>
-          </div>
+          </section>
 
-          <div class="algorithm-grid">
-            <article class="algorithm-card">
-              <span class="algorithm-number">01</span>
-
-              <h3>César</h3>
-
-              <p>Sustitución mediante desplazamiento.</p>
-
-              <form
-                th:if="${analysisComplete}"
-                th:action="@{/attack}"
-                method="post"
-              >
-                <input type="hidden" name="attack" value="CAESAR" />
-
-                <input
-                  type="hidden"
-                  th:name="${_csrf.parameterName}"
-                  th:value="${_csrf.token}"
-                />
-
-                <button type="submit" class="algorithm-button">
-                  Ejecutar ataque
-                </button>
-              </form>
-            </article>
-
-            <article class="algorithm-card">
-              <span class="algorithm-number">02</span>
-
-              <h3>Afín</h3>
-
-              <p>Sustitución monoalfabética lineal.</p>
-
-              <form
-                th:if="${analysisComplete}"
-                th:action="@{/attack}"
-                method="post"
-              >
-                <input type="hidden" name="attack" value="AFFINE" />
-
-                <input
-                  type="hidden"
-                  th:name="${_csrf.parameterName}"
-                  th:value="${_csrf.token}"
-                />
-
-                <button type="submit" class="algorithm-button">
-                  Ejecutar ataque
-                </button>
-              </form>
-            </article>
-
-            <article class="algorithm-card">
-              <span class="algorithm-number">03</span>
-
-              <h3>Vigenère</h3>
-
-              <p>Sustitución polialfabética.</p>
-
-              <form
-                th:if="${analysisComplete}"
-                th:action="@{/attack}"
-                method="post"
-              >
-                <input type="hidden" name="attack" value="VIGENERE" />
-
-                <input
-                  type="hidden"
-                  th:name="${_csrf.parameterName}"
-                  th:value="${_csrf.token}"
-                />
-
-                <button type="submit" class="algorithm-button">
-                  Ejecutar ataque
-                </button>
-              </form>
-            </article>
-
-            <article class="algorithm-card algorithm-disabled">
-              <span class="algorithm-number">04</span>
-
-              <h3>Próximo algoritmo</h3>
-
-              <p>Módulo reservado para futuras implementaciones.</p>
-
-              <span class="status">Pendiente</span>
-            </article>
-          </div>
-        </section>
-
-        <section class="frequency-section">
-          <div class="section-header">
-            <div>
-              <span class="section-label">ESTADÍSTICA</span>
+          <!-- FREQUENCY -->
+          <section class="dashboard-section">
+            <div class="section-header">
+              <span class="section-label"> ESTADÍSTICA </span>
 
               <h2>Frecuencia de letras</h2>
 
-              <p>Distribución del texto normalizado.</p>
+              <p>Distribución de las letras del texto normalizado.</p>
             </div>
-          </div>
 
-          <div class="frequency-table-container" th:if="${frequencies != null}">
-            <table class="frequency-table">
-              <thead>
-                <tr>
-                  <th>Letra</th>
-                  <th>Frecuencia</th>
-                  <th>Porcentaje</th>
-                </tr>
-              </thead>
+            <div
+              class="frequency-table-container"
+              th:if="${frequencies != null}"
+            >
+              <table class="frequency-table">
+                <thead>
+                  <tr>
+                    <th>Letra</th>
+                    <th>Frecuencia</th>
+                    <th>Porcentaje</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr th:each="frequency : ${frequencies}">
-                  <td th:text="${frequency.letter}">A</td>
+                <tbody>
+                  <tr th:each="frequency : ${frequencies}">
+                    <td class="letter-cell" th:text="${frequency.letter}">A</td>
 
-                  <td th:text="${frequency.count}">0</td>
+                    <td th:text="${frequency.count}">0</td>
 
-                  <td
-                    th:text="${#numbers.formatDecimal(frequency.percentage, 1, 2) + '%'}"
-                  >
-                    0.00%
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    <td
+                      th:text="${#numbers.formatDecimal(frequency.percentage, 1, 2) + '%'}"
+                    >
+                      0.00%
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <div class="empty-analysis" th:if="${frequencies == null}">
-            <p>Los resultados aparecerán después del análisis.</p>
-          </div>
-        </section>
+            <div class="empty-analysis" th:if="${frequencies == null}">
+              <p>Los resultados aparecerán después del análisis.</p>
+            </div>
+          </section>
 
-        <section
-          class="attack-results"
-          th:if="${attackComplete == true and attack == 'VIGENERE' and vigenereResult != null}"
-        >
-          <div class="section-header">
-            <div>
-              <span class="section-label">RESULTADO</span>
+          <!-- VIGENERE RESULT -->
+          <section
+            class="dashboard-section attack-results"
+            th:if="${attackComplete == true and attack == 'VIGENERE' and vigenereResult != null}"
+          >
+            <div class="section-header">
+              <span class="section-label"> RESULTADO </span>
 
               <h2>Ataque Vigenère</h2>
 
               <p>Resultado con mayor puntuación estadística.</p>
             </div>
-          </div>
 
-          <div class="result-grid">
-            <div class="result-card">
-              <span class="stat-label">Clave encontrada</span>
+            <div class="result-grid">
+              <div class="result-card">
+                <span class="stat-label"> Clave encontrada </span>
 
-              <strong th:text="${vigenereResult.key()}">—</strong>
+                <strong th:text="${vigenereResult.key()}"> — </strong>
+              </div>
+
+              <div class="result-card">
+                <span class="stat-label"> Longitud de clave </span>
+
+                <strong th:text="${vigenereResult.keyLength()}"> — </strong>
+              </div>
+
+              <div class="result-card result-wide">
+                <span class="stat-label"> Texto descifrado </span>
+
+                <p th:text="${vigenereResult.plaintext()}">—</p>
+              </div>
             </div>
+          </section>
 
-            <div class="result-card">
-              <span class="stat-label">Longitud</span>
-
-              <strong th:text="${vigenereResult.keyLength()}">—</strong>
-            </div>
-
-            <div class="result-card result-wide">
-              <span class="stat-label">Texto descifrado</span>
-
-              <p th:text="${vigenereResult.plaintext()}">—</p>
-            </div>
-          </div>
-        </section>
-
-        <section
-          class="attack-results"
-          th:if="${attackComplete == true and attack == 'AFFINE' and affineResult != null}"
-        >
-          <div class="section-header">
-            <div>
-              <span class="section-label">RESULTADO</span>
+          <!-- AFFINE RESULT -->
+          <section
+            class="dashboard-section attack-results"
+            th:if="${attackComplete == true and attack == 'AFFINE' and affineResult != null}"
+          >
+            <div class="section-header">
+              <span class="section-label"> RESULTADO </span>
 
               <h2>Ataque Afín</h2>
 
               <p>Mejor candidato obtenido durante el ataque.</p>
             </div>
-          </div>
 
-          <div
-            class="result-grid"
-            th:if="${affineResult.bestCandidate() != null}"
+            <div
+              class="result-grid"
+              th:if="${affineResult.bestCandidate() != null}"
+            >
+              <div class="result-card">
+                <span class="stat-label"> Parámetro a </span>
+
+                <strong th:text="${affineResult.bestCandidate().a()}">
+                  —
+                </strong>
+              </div>
+
+              <div class="result-card">
+                <span class="stat-label"> Parámetro b </span>
+
+                <strong th:text="${affineResult.bestCandidate().b()}">
+                  —
+                </strong>
+              </div>
+
+              <div class="result-card">
+                <span class="stat-label"> Puntuación </span>
+
+                <strong th:text="${affineResult.bestCandidate().score()}">
+                  —
+                </strong>
+              </div>
+
+              <div class="result-card result-wide">
+                <span class="stat-label"> Texto descifrado </span>
+
+                <p th:text="${affineResult.bestCandidate().plaintext()}">—</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- CAESAR RESULT -->
+          <section
+            class="dashboard-section attack-results"
+            th:if="${attackComplete == true and attack == 'CAESAR' and caesarResults != null}"
           >
-            <div class="result-card">
-              <span class="stat-label">Parámetro a</span>
-
-              <strong th:text="${affineResult.bestCandidate().a()}"> — </strong>
-            </div>
-
-            <div class="result-card">
-              <span class="stat-label">Parámetro b</span>
-
-              <strong th:text="${affineResult.bestCandidate().b()}"> — </strong>
-            </div>
-
-            <div class="result-card">
-              <span class="stat-label">Puntuación</span>
-
-              <strong th:text="${affineResult.bestCandidate().score()}">
-                —
-              </strong>
-            </div>
-
-            <div class="result-card result-wide">
-              <span class="stat-label">Texto descifrado</span>
-
-              <p th:text="${affineResult.bestCandidate().plaintext()}">—</p>
-            </div>
-          </div>
-        </section>
-
-        <section
-          class="attack-results"
-          th:if="${attackComplete == true and attack == 'CAESAR' and caesarResults != null}"
-        >
-          <div class="section-header">
-            <div>
-              <span class="section-label">RESULTADO</span>
+            <div class="section-header">
+              <span class="section-label"> RESULTADO </span>
 
               <h2>Ataque César</h2>
 
               <p>Candidatos evaluados para el desplazamiento.</p>
             </div>
-          </div>
 
-          <div class="frequency-table-container">
-            <table class="frequency-table">
-              <thead>
-                <tr>
-                  <th>Clave</th>
-                  <th>Texto descifrado</th>
-                </tr>
-              </thead>
+            <div class="frequency-table-container">
+              <table class="frequency-table">
+                <thead>
+                  <tr>
+                    <th>Clave</th>
+                    <th>Texto descifrado</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr th:each="result : ${caesarResults}">
-                  <td th:text="${result.key()}">0</td>
+                <tbody>
+                  <tr th:each="result : ${caesarResults}">
+                    <td class="letter-cell" th:text="${result.key()}">0</td>
 
-                  <td th:text="${result.plainText()}">—</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+                    <td class="plaintext-cell" th:text="${result.plainText()}">
+                      —
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-        <section class="message-section" th:if="${error != null}">
-          <p class="error-message" th:text="${error}"></p>
-        </section>
+          <!-- ERROR -->
+          <section class="message-section" th:if="${error != null}">
+            <p class="error-message" th:text="${error}"></p>
+          </section>
+        </div>
       </main>
     </div>
   </body>
