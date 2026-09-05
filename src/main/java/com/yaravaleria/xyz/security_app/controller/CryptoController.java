@@ -13,6 +13,7 @@ import com.yaravaleria.xyz.security_app.crypto.CaesarDecipher;
 import com.yaravaleria.xyz.security_app.crypto.VigenereCipher;
 import com.yaravaleria.xyz.security_app.crypto.VigenereDecipher;
 import com.yaravaleria.xyz.security_app.enums.Language;
+import com.yaravaleria.xyz.security_app.service.NormalizerService;
 
 @Controller
 public class CryptoController {
@@ -22,6 +23,7 @@ public class CryptoController {
     private final AffineDecipher affineDecipher;
     private final VigenereCipher vigenereCipher;
     private final VigenereDecipher vigenereDecipher;
+    private final NormalizerService normServ;
 
     public CryptoController() {
         this.caesarCipher = new CaesarCipher();
@@ -30,6 +32,7 @@ public class CryptoController {
         this.affineDecipher = new AffineDecipher();
         this.vigenereCipher = new VigenereCipher();
         this.vigenereDecipher = new VigenereDecipher();
+        this.normServ = new NormalizerService();
     }
 
     @GetMapping("/crypto")
@@ -47,27 +50,30 @@ public class CryptoController {
             @RequestParam(value = "a", required = false, defaultValue = "1") int a,
             @RequestParam(value = "b", required = false, defaultValue = "0") int b,
             Model model) {
-
-        model.addAttribute("languages", Language.values());
-        model.addAttribute("text", text);
-        model.addAttribute("language", language);
-        model.addAttribute("type", type);
+        prepareModel(model, text, language, type);
 
         try {
+            String normalizedText = prepareText(text, language);
+
+            model.addAttribute("normalizedText", normalizedText);
+
             String result = switch (type.trim().toUpperCase()) {
                 case "CAESAR" -> caesarCipher.encrypt(
-                        text,
+                        normalizedText,
                         Integer.parseInt(key),
                         language);
+
                 case "AFFINE" -> affineCipher.encrypt(
-                        text,
+                        normalizedText,
                         a,
                         b,
                         language);
+
                 case "VIGENERE" -> vigenereCipher.encrypt(
-                        text,
+                        normalizedText,
                         key,
                         language);
+
                 default -> throw new IllegalArgumentException(
                         "El tipo de cifrado seleccionado no es válido.");
             };
@@ -91,27 +97,30 @@ public class CryptoController {
             @RequestParam(value = "a", required = false, defaultValue = "1") int a,
             @RequestParam(value = "b", required = false, defaultValue = "0") int b,
             Model model) {
-
-        model.addAttribute("languages", Language.values());
-        model.addAttribute("text", text);
-        model.addAttribute("language", language);
-        model.addAttribute("type", type);
+        prepareModel(model, text, language, type);
 
         try {
+            String normalizedText = prepareText(text, language);
+
+            model.addAttribute("normalizedText", normalizedText);
+
             String result = switch (type.trim().toUpperCase()) {
                 case "CAESAR" -> caesarDecipher.decrypt(
-                        text,
+                        normalizedText,
                         Integer.parseInt(key),
                         language);
+
                 case "AFFINE" -> affineDecipher.decrypt(
-                        text,
+                        normalizedText,
                         a,
                         b,
                         language);
+
                 case "VIGENERE" -> vigenereDecipher.decrypt(
-                        text,
+                        normalizedText,
                         key,
                         language);
+
                 default -> throw new IllegalArgumentException(
                         "El tipo de descifrado seleccionado no es válido.");
             };
@@ -124,5 +133,40 @@ public class CryptoController {
         }
 
         return "crypto";
+    }
+
+    private String prepareText(String text, Language language) {
+        if (text == null || text.trim().length() < 400) {
+            throw new IllegalArgumentException(
+                    "El texto debe contener al menos 400 caracteres.");
+        }
+
+        if (language.name().equals("ENGLISH")
+                && (text.contains("Ñ") || text.contains("ñ"))) {
+
+            throw new IllegalArgumentException(
+                    "El idioma inglés no permite utilizar la letra Ñ.");
+        }
+
+        String normalizedText = normServ.normalize(text, language);
+
+        if (normalizedText.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El texto no contiene caracteres válidos para el idioma seleccionado.");
+        }
+
+        return normalizedText;
+    }
+
+    private void prepareModel(
+            Model model,
+            String text,
+            Language language,
+            String type) {
+
+        model.addAttribute("languages", Language.values());
+        model.addAttribute("text", text);
+        model.addAttribute("language", language);
+        model.addAttribute("type", type);
     }
 }

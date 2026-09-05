@@ -1,13 +1,14 @@
 <!doctype html>
-
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seguridad de la Información</title>
+
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
   </head>
+
   <body>
     <div class="app">
       <aside class="sidebar">
@@ -16,50 +17,50 @@
           <span>Seguridad de la Información</span>
         </div>
 
-        ```
         <nav class="navigation">
           <a th:href="@{/dashboard}" class="nav-item active">
             <span class="nav-indicator"></span>
             Dashboard
           </a>
+
           <a th:href="@{/crypto}" class="nav-item">
             <span class="nav-indicator"></span>
             Prueba criptográfica
           </a>
-          <a href="#" class="nav-item">
-            <span class="nav-indicator"></span>
-            Historial
-          </a>
-          <a href="#" class="nav-item">
-            <span class="nav-indicator"></span>
-            Perfil
-          </a>
         </nav>
-
-        <div class="sidebar-footer">
-          <form th:action="@{/logout}" method="post">
-            <button type="submit" class="logout-button">Cerrar sesión</button>
-          </form>
-        </div>
       </aside>
 
       <main class="main-content">
         <header class="topbar">
           <div>
             <span class="eyebrow">LABORATORIO CRIPTOGRÁFICO</span>
+
             <h1>Dashboard</h1>
+
             <p>Análisis y criptoanálisis de textos</p>
           </div>
 
           <div class="user-info">
             <span class="user-name" th:text="${username}">Usuario</span>
+
+            <form th:action="@{/logout}" method="post">
+              <input
+                type="hidden"
+                th:name="${_csrf.parameterName}"
+                th:value="${_csrf.token}"
+              />
+
+              <button type="submit" class="logout-button">Cerrar sesión</button>
+            </form>
           </div>
         </header>
 
         <section class="welcome-card">
           <div>
             <span class="card-label">ENTORNO DE ANÁLISIS</span>
+
             <h2>Laboratorio criptográfico</h2>
+
             <p>
               Analiza criptogramas y evalúa sus características mediante
               técnicas de criptoanálisis.
@@ -71,7 +72,9 @@
           <div class="section-header">
             <div>
               <span class="section-label">ANÁLISIS</span>
+
               <h2>Nuevo análisis</h2>
+
               <p>Introduce el texto cifrado para comenzar.</p>
             </div>
           </div>
@@ -95,16 +98,22 @@
                   <label for="language">Idioma</label>
 
                   <select id="language" name="language" required>
-                      <option
-                          th:each="lang : ${languages}"
-                          th:value="${lang}"
-                          th:text="${lang}"
-                          th:selected="${language != null and language == lang}">
-                      </option>
+                    <option
+                      th:each="lang : ${languages}"
+                      th:value="${lang}"
+                      th:text="${lang}"
+                      th:selected="${language != null ? language == lang : lang.name() == 'SPANISH'}"
+                    ></option>
                   </select>
                 </div>
 
                 <div class="input-actions">
+                  <input
+                    type="hidden"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
+                  />
+
                   <button type="submit" class="primary-button">Analizar</button>
 
                   <button
@@ -123,6 +132,7 @@
         <section class="stats-grid">
           <div class="stat-card">
             <span class="stat-label">Índice de Coincidencia</span>
+
             <strong
               id="ic-result"
               th:text="${ic != null ? #numbers.formatDecimal(ic, 1, 6) : '—'}"
@@ -133,6 +143,7 @@
 
           <div class="stat-card">
             <span class="stat-label">Diagnóstico</span>
+
             <strong
               id="cipher-result"
               th:text="${diagnose != null ? diagnose : 'Pendiente'}"
@@ -143,6 +154,7 @@
 
           <div class="stat-card">
             <span class="stat-label">Clave</span>
+
             <strong id="key-result">—</strong>
           </div>
         </section>
@@ -151,7 +163,9 @@
           <div class="section-header">
             <div>
               <span class="section-label">CRIPTOANÁLISIS</span>
+
               <h2>Algoritmos disponibles</h2>
+
               <p>Selecciona un método para atacar el criptograma.</p>
             </div>
           </div>
@@ -159,7 +173,9 @@
           <div class="algorithm-grid">
             <article class="algorithm-card">
               <span class="algorithm-number">01</span>
+
               <h3>César</h3>
+
               <p>Sustitución mediante desplazamiento.</p>
 
               <form
@@ -168,6 +184,13 @@
                 method="post"
               >
                 <input type="hidden" name="attack" value="CAESAR" />
+
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
+
                 <button type="submit" class="algorithm-button">
                   Ejecutar ataque
                 </button>
@@ -176,7 +199,9 @@
 
             <article class="algorithm-card">
               <span class="algorithm-number">02</span>
+
               <h3>Afín</h3>
+
               <p>Sustitución monoalfabética lineal.</p>
 
               <form
@@ -185,6 +210,13 @@
                 method="post"
               >
                 <input type="hidden" name="attack" value="AFFINE" />
+
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
+
                 <button type="submit" class="algorithm-button">
                   Ejecutar ataque
                 </button>
@@ -193,7 +225,9 @@
 
             <article class="algorithm-card">
               <span class="algorithm-number">03</span>
+
               <h3>Vigenère</h3>
+
               <p>Sustitución polialfabética.</p>
 
               <form
@@ -202,6 +236,13 @@
                 method="post"
               >
                 <input type="hidden" name="attack" value="VIGENERE" />
+
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
+
                 <button type="submit" class="algorithm-button">
                   Ejecutar ataque
                 </button>
@@ -210,8 +251,11 @@
 
             <article class="algorithm-card algorithm-disabled">
               <span class="algorithm-number">04</span>
+
               <h3>Próximo algoritmo</h3>
+
               <p>Módulo reservado para futuras implementaciones.</p>
+
               <span class="status">Pendiente</span>
             </article>
           </div>
@@ -221,7 +265,9 @@
           <div class="section-header">
             <div>
               <span class="section-label">ESTADÍSTICA</span>
+
               <h2>Frecuencia de letras</h2>
+
               <p>Distribución del texto normalizado.</p>
             </div>
           </div>
@@ -239,7 +285,9 @@
               <tbody>
                 <tr th:each="frequency : ${frequencies}">
                   <td th:text="${frequency.letter}">A</td>
+
                   <td th:text="${frequency.count}">0</td>
+
                   <td
                     th:text="${#numbers.formatDecimal(frequency.percentage, 1, 2) + '%'}"
                   >
@@ -256,13 +304,15 @@
         </section>
 
         <section
-            class="attack-results"
-            th:if="${attackComplete == true and attack == 'VIGENERE' and vigenereResult != null}"
+          class="attack-results"
+          th:if="${attackComplete == true and attack == 'VIGENERE' and vigenereResult != null}"
         >
           <div class="section-header">
             <div>
               <span class="section-label">RESULTADO</span>
+
               <h2>Ataque Vigenère</h2>
+
               <p>Resultado con mayor puntuación estadística.</p>
             </div>
           </div>
@@ -270,29 +320,34 @@
           <div class="result-grid">
             <div class="result-card">
               <span class="stat-label">Clave encontrada</span>
+
               <strong th:text="${vigenereResult.key()}">—</strong>
             </div>
 
             <div class="result-card">
               <span class="stat-label">Longitud</span>
+
               <strong th:text="${vigenereResult.keyLength()}">—</strong>
             </div>
 
             <div class="result-card result-wide">
               <span class="stat-label">Texto descifrado</span>
+
               <p th:text="${vigenereResult.plaintext()}">—</p>
             </div>
           </div>
         </section>
 
         <section
-            class="attack-results"
-            th:if="${attackComplete == true and attack == 'AFFINE' and affineResult != null}"
+          class="attack-results"
+          th:if="${attackComplete == true and attack == 'AFFINE' and affineResult != null}"
         >
           <div class="section-header">
             <div>
               <span class="section-label">RESULTADO</span>
+
               <h2>Ataque Afín</h2>
+
               <p>Mejor candidato obtenido durante el ataque.</p>
             </div>
           </div>
@@ -303,36 +358,42 @@
           >
             <div class="result-card">
               <span class="stat-label">Parámetro a</span>
-              <strong th:text="${affineResult.bestCandidate().a()}">—</strong>
+
+              <strong th:text="${affineResult.bestCandidate().a()}"> — </strong>
             </div>
 
             <div class="result-card">
               <span class="stat-label">Parámetro b</span>
-              <strong th:text="${affineResult.bestCandidate().b()}">—</strong>
+
+              <strong th:text="${affineResult.bestCandidate().b()}"> — </strong>
             </div>
 
             <div class="result-card">
               <span class="stat-label">Puntuación</span>
-              <strong th:text="${affineResult.bestCandidate().score()}"
-                >—</strong
-              >
+
+              <strong th:text="${affineResult.bestCandidate().score()}">
+                —
+              </strong>
             </div>
 
             <div class="result-card result-wide">
               <span class="stat-label">Texto descifrado</span>
+
               <p th:text="${affineResult.bestCandidate().plaintext()}">—</p>
             </div>
           </div>
         </section>
 
         <section
-            class="attack-results"
-            th:if="${attackComplete == true and attack == 'CAESAR' and caesarResults != null}"
+          class="attack-results"
+          th:if="${attackComplete == true and attack == 'CAESAR' and caesarResults != null}"
         >
           <div class="section-header">
             <div>
               <span class="section-label">RESULTADO</span>
+
               <h2>Ataque César</h2>
+
               <p>Candidatos evaluados para el desplazamiento.</p>
             </div>
           </div>
@@ -349,6 +410,7 @@
               <tbody>
                 <tr th:each="result : ${caesarResults}">
                   <td th:text="${result.key()}">0</td>
+
                   <td th:text="${result.plainText()}">—</td>
                 </tr>
               </tbody>
