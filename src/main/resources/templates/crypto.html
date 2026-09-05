@@ -1,0 +1,283 @@
+<!doctype html>
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Prueba Criptográfica</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+    <link rel="stylesheet" th:href="@{/css/crypto.css}" />
+  </head>
+
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">SEC</span>
+          <span>Seguridad de la Información</span>
+        </div>
+
+        <nav class="navigation">
+          <a href="/dashboard" class="nav-item">
+            <span class="nav-indicator"></span>
+            Dashboard
+          </a>
+
+          <a href="/crypto" class="nav-item active">
+            <span class="nav-indicator"></span>
+            Prueba criptográfica
+          </a>
+
+          <a href="#" class="nav-item">
+            <span class="nav-indicator"></span>
+            Historial
+          </a>
+
+          <a href="#" class="nav-item">
+            <span class="nav-indicator"></span>
+            Perfil
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <form th:action="@{/logout}" method="post">
+            <input
+              type="hidden"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+            />
+
+            <button type="submit" class="logout-button">Cerrar sesión</button>
+          </form>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <div class="crypto-page">
+          <header class="topbar">
+            <div>
+              <span class="eyebrow"> LABORATORIO CRIPTOGRÁFICO </span>
+
+              <h1>Prueba de cifrado</h1>
+
+              <p>
+                Comprueba directamente las operaciones de cifrado y descifrado
+                de los algoritmos implementados.
+              </p>
+            </div>
+          </header>
+
+          <section class="crypto-card">
+            <div class="section-header">
+              <div>
+                <span class="section-label"> PRUEBA </span>
+
+                <h2>Operación criptográfica</h2>
+
+                <p>
+                  Introduce un texto, selecciona el algoritmo y proporciona sus
+                  parámetros.
+                </p>
+              </div>
+            </div>
+
+            <form class="crypto-form" method="post">
+              <div class="form-group">
+                <label for="text"> Texto </label>
+
+                <textarea
+                  id="text"
+                  name="text"
+                  required
+                  placeholder="Introduce aquí el texto..."
+                  th:text="${text}"
+                ></textarea>
+              </div>
+
+              <div class="parameters-grid">
+                <div class="form-group">
+                  <label for="language"> Idioma </label>
+
+                  <select id="language" name="language" required>
+                    <option value="" disabled th:selected="${language == null}">
+                      Selecciona un idioma
+                    </option>
+
+                    <option
+                      th:each="lang : ${languages}"
+                      th:value="${lang}"
+                      th:text="${lang}"
+                      th:selected="${language != null and language == lang}"
+                    ></option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="type"> Algoritmo </label>
+
+                  <select
+                    id="type"
+                    name="type"
+                    required
+                    onchange="updateParameters()"
+                  >
+                    <option
+                      value="CAESAR"
+                      th:selected="${type == null or type == 'CAESAR'}"
+                    >
+                      César
+                    </option>
+
+                    <option value="AFFINE" th:selected="${type == 'AFFINE'}">
+                      Afín
+                    </option>
+
+                    <option
+                      value="VIGENERE"
+                      th:selected="${type == 'VIGENERE'}"
+                    >
+                      Vigenère
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="key-field" class="form-group">
+                <label for="key"> Clave </label>
+
+                <input
+                  type="text"
+                  id="key"
+                  name="key"
+                  th:value="${param.key != null ? param.key : '0'}"
+                  placeholder="Ejemplo: 5"
+                />
+
+                <small id="key-help" class="field-help">
+                  Para César utiliza un número.
+                </small>
+              </div>
+
+              <div id="affine-fields" class="parameters-grid affine-fields">
+                <div class="form-group">
+                  <label for="a"> Parámetro a </label>
+
+                  <input
+                    type="number"
+                    id="a"
+                    name="a"
+                    th:value="${param.a != null ? param.a : 1}"
+                  />
+
+                  <small class="field-help">
+                    Debe ser válido para el módulo utilizado.
+                  </small>
+                </div>
+
+                <div class="form-group">
+                  <label for="b"> Parámetro b </label>
+
+                  <input
+                    type="number"
+                    id="b"
+                    name="b"
+                    th:value="${param.b != null ? param.b : 0}"
+                  />
+
+                  <small class="field-help">
+                    Desplazamiento utilizado por el cifrado.
+                  </small>
+                </div>
+              </div>
+
+              <input
+                type="hidden"
+                th:name="${_csrf.parameterName}"
+                th:value="${_csrf.token}"
+              />
+
+              <div class="action-buttons">
+                <button
+                  type="submit"
+                  class="crypto-button encrypt-button"
+                  th:formaction="@{/crypto/encrypt}"
+                >
+                  Cifrar
+                </button>
+
+                <button
+                  type="submit"
+                  class="crypto-button decrypt-button"
+                  th:formaction="@{/crypto/decrypt}"
+                >
+                  Descifrar
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="crypto-card result-card" th:if="${result != null}">
+            <div class="result-operation">
+              <span th:text="${operation}"> Resultado </span>
+            </div>
+
+            <h2>Resultado</h2>
+
+            <p class="result-text" th:text="${result}">
+              El resultado aparecerá aquí.
+            </p>
+          </section>
+
+          <section class="crypto-card error-card" th:if="${error != null}">
+            <div class="error-title">Error</div>
+
+            <p class="error-message" th:text="${error}">Se produjo un error.</p>
+          </section>
+        </div>
+      </main>
+      ```
+    </div>
+
+    <script>
+      function updateParameters() {
+        const type = document.getElementById("type").value;
+
+        const keyField = document.getElementById("key-field");
+
+        const affineFields = document.getElementById("affine-fields");
+
+        const key = document.getElementById("key");
+
+        const keyHelp = document.getElementById("key-help");
+
+        if (type === "AFFINE") {
+          keyField.style.display = "none";
+
+          affineFields.style.display = "grid";
+        } else {
+          keyField.style.display = "flex";
+
+          affineFields.style.display = "none";
+
+          if (type === "CAESAR") {
+            key.placeholder = "Ejemplo: 5";
+
+            keyHelp.textContent = "Para César utiliza un número.";
+          }
+
+          if (type === "VIGENERE") {
+            key.placeholder = "Ejemplo: CLAVE";
+
+            keyHelp.textContent =
+              "Para Vigenère utiliza una palabra como clave.";
+          }
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", updateParameters);
+    </script>
+  </body>
+</html>

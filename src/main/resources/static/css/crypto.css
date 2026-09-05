@@ -1,0 +1,205 @@
+.crypto-page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.crypto-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.crypto-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #111827;
+}
+
+.form-group textarea,
+.form-group input,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d8dce3;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group textarea {
+    min-height: 180px;
+    resize: vertical;
+    padding: 14px;
+    line-height: 1.5;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px 14px;
+    height: 46px;
+}
+
+.form-group textarea:focus,
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+.parameters-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.field-help {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+.affine-fields {
+    display: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+}
+
+.crypto-button {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.crypto-button:hover {
+    transform: translateY(-1px);
+}
+
+.crypto-button:active {
+    transform: translateY(0);
+}
+
+.crypto-button:focus-visible {
+    outline: 3px solid rgba(17, 24, 39, 0.2);
+    outline-offset: 2px;
+}
+
+.encrypt-button {
+    background: #111827;
+    color: #ffffff;
+}
+
+.encrypt-button:hover {
+    opacity: 0.92;
+}
+
+.decrypt-button {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.decrypt-button:hover {
+    background: #d1d5db;
+}
+
+.result-card {
+    border-left: 4px solid #111827;
+}
+
+.result-operation {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.result-card h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #111827;
+}
+
+.result-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    padding: 16px;
+    background: #f7f7f8;
+    border-radius: 10px;
+    color: #111827;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.error-card {
+    border-left: 4px solid #b91c1c;
+    background: #fef2f2;
+}
+
+.error-title {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #991b1b;
+}
+
+.error-message {
+    color: #991b1b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+    .crypto-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .parameters-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .crypto-button {
+        width: 100%;
+    }
+}
