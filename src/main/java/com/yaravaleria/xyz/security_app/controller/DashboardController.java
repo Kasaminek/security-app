@@ -71,14 +71,14 @@ public class DashboardController {
     public String analyze(@RequestParam("cipherText") String cipherText, @RequestParam("language") Language language,
             Model model, Authentication authentication, HttpSession session) {
         prepareCommonModel(model, authentication);
-        
+
         model.addAttribute("cipherText", cipherText);
         model.addAttribute("language", language);
 
-        if (cipherText == null || cipherText.trim().length() < 400) {
+        if (cipherText == null || cipherText.trim().length() < 150) {
             model.addAttribute(
                     "error",
-                    "El texto cifrado debe contener al menos 400 caracteres.");
+                    "El texto cifrado debe contener al menos 150 caracteres.");
 
             return "dashboard";
         }
